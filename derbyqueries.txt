@@ -1,0 +1,148 @@
+create table ERIC_USER(firstname varchar(50), lastname varchar(50),email varchar(50), mobileno bigint primary key, gender varchar(10), country varchar(50), state varchar(50), dob date) 
+
+
+
+
+
+
+
+create table HT_User(Email_Id varchar(50) primary key, FullName varchar(50), Password varchar(10) );
+insert into HT_USER(Email_Id) values('param@gmail.com');
+select * from HT_USER;
+
+create table employee(EmployeeId int primary key 
+GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), 
+FirstName varchar(25), LastName varchar(25), Location varchar(50));
+
+update HT_USER set FULLNAME='Parameswari', PASSWORD='test@123' where Email_Id='param@gmail.com'
+Alter table HT_User add country varchar(50) not null default 'India';
+create table HT_Profile(Gender boolean, DOB date, Nationality varchar(50), Address varchar(100), 
+City varchar(50), State varchar(50), Pincode int, MobileNo int, 
+Landline int, EmailId_FK varchar(50) references HT_User(Email_Id) );
+alter table HT_Profile drop column MobileNo;
+alter table HT_Profile add MobileNo varchar(10);
+alter table HT_Profile add constraint mobile_unique unique(MobileNo);
+insert into HT_Profile(Gender,DOB,Nationality,address,city,state,pincode,mobileno,
+landline,emailid_fk) values(false,'1988-5-5','Indian','Rajaji St',
+'Chennai','TamilNadu',60049,'9952032862',26502438,'param@gmail.com');
+select * from HT_Profile;
+select u.FullName,u.Password,p.MobileNo,p.DOB from 
+HT_USER u, HT_Profile p where u.Email_Id=p.EmailId_fk;
+create table ADMIN.books(bookno int, bookname varchar(50), dop date, price int);
+select * from books;
+CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE 
+   ('ADMIN','BOOKS','F:\HSBCBootcamp\books.csv',',',null,null,0);
+
+
+//auto increment
+CREATE TABLE AUTHORS(ID BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY 
+ (START WITH 1, INCREMENT BY 1), NAME VARCHAR(25));
+CREATE TABLE STATE(ID BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY 
+ (START WITH 1, INCREMENT BY 1), NAME VARCHAR(50));
+
+CREATE TABLE BOOKS(ID BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY 
+(START WITH 1, INCREMENT BY 1), AUTHOR_ID BIGINT, TITLE VARCHAR(150), 
+FOREIGN KEY(AUTHOR_ID) REFERENCES AUTHORS(ID));
+CREATE TABLE CITY(ID BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY 
+(START WITH 1, INCREMENT BY 1), NAME VARCHAR(150), STATE_ID BIGINT,
+FOREIGN KEY(STATE_ID) REFERENCES STATE(ID));
+INSERT INTO AUTHORS(NAME) VALUES('Jack London');
+INSERT INTO ADMIN.STATE(NAME) VALUES('TAMILNADU');
+INSERT INTO BOOKS(AUTHOR_ID, TITLE) VALUES(1, 'Call of the Wild');
+SELECT NAME, TITLE FROM AUTHORS, BOOKS WHERE AUTHORS.ID = BOOKS.AUTHOR_ID;
+INSERT INTO ADMIN.CITY(NAME,STATE_ID) VALUES('CHENNAI',1);
+INSERT INTO ADMIN.CITY(NAME,STATE_ID) VALUES('TRICHY',1);
+INSERT INTO ADMIN.CITY(NAME,STATE_ID) VALUES('MADURAI',1);
+//select first 4 rows
+SELECT * FROM BOOKS FETCH FIRST 4 ROWS ONLY;
+//skip first 4 rows
+SELECT * FROM BOOKS OFFSET 4 ROWS;
+//select combination of rows
+SELECT * FROM BOOKS OFFSET 4 ROWS FETCH NEXT 3 ROWS ONLY;
+
+select s.NAME,c.NAME from ADMIN.STATE s, ADMIN.CITY c where s.ID=c.STATE_ID;
+Select * from CITY;
+
+SELECT * FROM CITY FETCH FIRST 2 ROWS ONLY;/*TOP 2*/
+
+SELECT * FROM CITY OFFSET 2 ROWS;/*SKIP*/
+
+SELECT NAME FROM BOOKS WHERE BOOKNAME LIKE '%en';//ends with en
+SELECT * FROM CITY WHERE NAME LIKE 'M%';
+
+SELECT * FROM CITY WHERE NAME LIKE '%E';
+
+SELECT * FROM CITY WHERE NAME LIKE '_A%';
+SELECT * FROM CITY WHERE NAME LIKE '%R_';
+
+SELECT * FROM BOOKS WHERE BOOKNO IN (1234, 1238, 1240);
+SELECT * FROM BOOKS WHERE PRICE BETWEEN 1000 AND 2000;
+SELECT * FROM BOOKS ORDER BY PRICE;
+SELECT * FROM BOOKS ORDER BY PRICE DESC;
+SELECT COUNT(BOOKNO) FROM BOOkS;
+SELECT MIN(PRICE) AS "PRICE", MAX(PRICE) AS "MAX",
+AVG(PRICE) AS "AVG", SUM(PRICE) AS "SUM" FROM BOOKS;
+SELECT COUNT(ID) FROM CITY group BY STATE_ID;
+
+
+select s.NAME,COUNT(c.NAME) from ADMIN.STATE s, ADMIN.CITY c  
+      where s.ID=c.STATE_ID GROUP BY s.NAME;
+
+//date and time
+VALUES CURRENT_DATE;
+//current values
+VALUES CURRENT SCHEMA;
+VALUES CURRENT_TIME;
+VALUES LENGTH('Wonderful day');
+VALUES UPPER('derby');
+VALUES LOWER('Derby');
+VALUES SUBSTR('blueberries', 5);  
+VALUES SUBSTR('blueberries', 1, 4);
+VALUES ABS(-4);
+VALUES CEIL(3.4), CEIL(3.8);
+VALUES FLOOR(3.4), FLOOR(3.8);
+UPDATE BOOKS SET PRICE=3000 WHERE BOOKNO=1235;
+
+//delete
+DELETE FROM BOOKS WHERE BOOKNO=1236;
+DROP TABLE BOOKS;
+RENAME TABLE BOOKS TO COMPUTERBOOKS;
+
+//creating stored procedure
+
+call sqlj.install_jar('F:/HSBCBootcamp/storeproc.jar',
+	'APP.Cars', 0);
+	
+call sqlj.remove_jar('APP.Cars', 0);
+call syscs_util.SYSCS_SET_DATABASE_PROPERTY('derby.database.classpath', 'APP.Cars');
+
+create procedure ADMIN.READDATA() parameter
+	style java language java modifies
+	sql data external name
+	'com.hsbc.banking.procedures.CarStoredProcedure.readData';
+	
+drop procedure ADMIN.READDATA; 
+
+
+
+call sqlj.install_jar('F:/HSBCBootcamp/ctprocnew.jar',
+	'APP.CT', 0);
+call sqlj.remove_jar('APP.CT', 0);	
+call syscs_util.SYSCS_SET_DATABASE_PROPERTY('derby.database.classpath', 'APP.CT');
+
+create procedure ADMIN.CREATETABLEPROC(tableName varchar(100)) parameter
+	style java language java modifies
+	sql data external name
+	'com.hsbc.banking.splib.StoredProcedureApp.createTable';
+drop procedure ADMIN.CREATETABLEPROC;
+
+
+
+call ADMIN.READDATA();
+
+
+
+
+
+
+
