@@ -1,0 +1,14 @@
+go to bin and type ij
+
+>connect 'jdbc:derby:MyDbTest;create=true';
+>exit; 
+> connect 'jdbc:derby:MyDbTest';
+ij> create table derbyDB(num int, addr varchar(40));
+ij> insert into derbyDB values (1956,'Webster St.');
+ij> insert into derbyDB values (1910,'Union St.');
+ij> update derbyDB set num=180, addr='Grand Ave.' where num=1956;
+ij> select * from derbyDb;
+ij>disconnect;
+ij>exit;
+ij> run 'my_file.sql';
+
